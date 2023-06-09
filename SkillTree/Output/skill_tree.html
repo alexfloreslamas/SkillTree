@@ -1,0 +1,116 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1>Skill Tree</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 90%;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#aeff89", "fixed": false, "font": {"color": "#000000"}, "group": "0", "id": "0", "label": "Skill level: 1/5", "physics": true, "shape": "box", "size": 10, "x": -600, "y": 0}, {"color": "#7dff42", "fixed": false, "font": {"color": "#000000"}, "group": "0", "id": "1", "label": "Skill level: 2/5", "physics": true, "shape": "box", "size": 10, "x": -600, "y": -50}, {"color": "#4ff900", "fixed": false, "font": {"color": "#000000"}, "group": "0", "id": "2", "label": "Skill level: 3/5", "physics": true, "shape": "box", "size": 10, "x": -600, "y": -100}, {"color": "#43d600", "fixed": false, "font": {"color": "#000000"}, "group": "0", "id": "3", "label": "Skill level: 4/5", "physics": true, "shape": "box", "size": 10, "x": -600, "y": -150}, {"color": "#38b200", "fixed": false, "font": {"color": "#000000"}, "group": "0", "id": "4", "label": "Skill level: 5/5", "physics": true, "shape": "box", "size": 10, "x": -600, "y": -200}, {"color": "#164700", "font": {"color": "#000000"}, "group": "1", "id": "Root skill", "label": "Root skill", "shape": "dot", "size": 33}, {"color": "#216b00", "font": {"color": "#000000"}, "group": "1", "id": "Big skill 1", "label": "Big skill 1", "shape": "dot", "size": 21}, {"color": "#216b00", "font": {"color": "#000000"}, "group": "1", "id": "Big skill 2", "label": "Big skill 2", "shape": "dot", "size": 21}, {"color": "#216b00", "font": {"color": "#000000"}, "group": "1", "id": "Big skill 3", "label": "Big skill 3", "shape": "dot", "size": 21}, {"color": "#2d8e00", "font": {"color": "#000000"}, "group": "1", "id": "Sub-skill 1", "label": "Sub-skill 1", "shape": "dot", "size": 21}, {"color": "#2d8e00", "font": {"color": "#000000"}, "group": "1", "id": "Sub-skill 2", "label": "Sub-skill 2", "shape": "dot", "size": 21}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 1", "label": "skill 1", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 2", "label": "skill 2", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 3", "label": "skill 3", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 4", "label": "skill 4", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#7dff42", "font": {"color": "#000000"}, "group": "1", "id": "skill 5", "label": "skill 5", "shape": "dot", "size": 6, "title": "Skill level: 2/5"}, {"color": "#aeff89", "font": {"color": "#000000"}, "group": "1", "id": "skill 6", "label": "skill 6", "shape": "dot", "size": 3, "title": "Skill level: 1/5"}, {"color": "#aeff89", "font": {"color": "#000000"}, "group": "1", "id": "skill 7", "label": "skill 7", "shape": "dot", "size": 3, "title": "Skill level: 1/5"}, {"color": "#43d600", "font": {"color": "#000000"}, "group": "1", "id": "skill 8", "label": "skill 8", "shape": "dot", "size": 12, "title": "Skill level: 4/5"}, {"color": "#43d600", "font": {"color": "#000000"}, "group": "1", "id": "skill 9", "label": "skill 9", "shape": "dot", "size": 12, "title": "Skill level: 4/5"}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 10", "label": "skill 10", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 11", "label": "skill 11", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 12", "label": "skill 12", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#2d8e00", "font": {"color": "#000000"}, "group": "1", "id": "Sub-skill 3", "label": "Sub-skill 3", "shape": "dot", "size": 21}, {"color": "#2d8e00", "font": {"color": "#000000"}, "group": "1", "id": "Sub-skill 4", "label": "Sub-skill 4", "shape": "dot", "size": 21}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 13", "label": "skill 13", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 14", "label": "skill 14", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#38b200", "font": {"color": "#000000"}, "group": "1", "id": "skill 15", "label": "skill 15", "shape": "dot", "size": 15, "title": "Skill level: 5/5"}, {"color": "#43d600", "font": {"color": "#000000"}, "group": "1", "id": "skill 16", "label": "skill 16", "shape": "dot", "size": 12, "title": "Skill level: 4/5"}, {"color": "#43d600", "font": {"color": "#000000"}, "group": "1", "id": "skill 17", "label": "skill 17", "shape": "dot", "size": 12, "title": "Skill level: 4/5"}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 18", "label": "skill 18", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#4ff900", "font": {"color": "#000000"}, "group": "1", "id": "skill 19", "label": "skill 19", "shape": "dot", "size": 9, "title": "Skill level: 3/5"}, {"color": "#7dff42", "font": {"color": "#000000"}, "group": "1", "id": "skill 20", "label": "skill 20", "shape": "dot", "size": 6, "title": "Skill level: 2/5"}, {"color": "#aeff89", "font": {"color": "#000000"}, "group": "1", "id": "skill 21", "label": "skill 21", "shape": "dot", "size": 3, "title": "Skill level: 1/5"}, {"color": "#aeff89", "font": {"color": "#000000"}, "group": "1", "id": "skill 22", "label": "skill 22", "shape": "dot", "size": 3, "title": "Skill level: 1/5"}]);
+        edges = new vis.DataSet([{"color": "#000000", "from": "0", "to": "1", "weight": 1, "width": 3}, {"color": "#000000", "from": "1", "to": "2", "weight": 1, "width": 3}, {"color": "#000000", "from": "2", "to": "3", "weight": 1, "width": 3}, {"color": "#000000", "from": "3", "to": "4", "weight": 1, "width": 3}, {"color": "#000000", "from": "Root skill", "to": "Big skill 1", "weight": 1, "width": 3}, {"color": "#000000", "from": "Root skill", "to": "Big skill 2", "weight": 1, "width": 3}, {"color": "#000000", "from": "Root skill", "to": "Big skill 3", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 1", "to": "Sub-skill 1", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 1", "to": "Sub-skill 2", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 1", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 2", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 3", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 4", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 5", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 6", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 1", "to": "skill 7", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 2", "to": "skill 8", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 2", "to": "skill 9", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 2", "to": "skill 10", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 2", "to": "skill 11", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 2", "to": "skill 12", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 3", "to": "Sub-skill 3", "weight": 1, "width": 3}, {"color": "#000000", "from": "Big skill 3", "to": "Sub-skill 4", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 3", "to": "skill 13", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 3", "to": "skill 14", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 3", "to": "skill 15", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 3", "to": "skill 16", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 3", "to": "skill 17", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 4", "to": "skill 18", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 4", "to": "skill 19", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 4", "to": "skill 20", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 4", "to": "skill 21", "weight": 1, "width": 3}, {"color": "#000000", "from": "Sub-skill 4", "to": "skill 22", "weight": 1, "width": 3}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 100,
+            "springConstant": 0.05,
+            "springLength": 65
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

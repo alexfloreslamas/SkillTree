@@ -1,0 +1,56 @@
+---
+network_config:                         # <- Do not change this name
+    title:              Skill Tree
+    bgcolor:            "#ffffff"       # background, color in hex
+    font_color:         "#000000"       # font color for nodes, color in hex
+    edge_color:         "#000000"
+    edge_width:         3
+                                        # nodes_sizes = maximum node sizes, by levels, from root to leaves; for example:
+                                        #   Root skill
+                                        #       Big skill 1
+                                        #           Sub-skill 1
+                                        #               3: [blah, blah]     <- leaves
+                                        #               2: [blah]
+                                        #               1: [blah]
+                                        #           Another sub-skill
+                                        #           ...
+                                        #       Big skill 2
+                                        #       ...
+                                        # Sizes go from the root node to leaves; the leftmost value is the root's size,
+                                        # and the rightmost value is the "max proficiency" for leaves; I am using the
+                                        # range [1:max_proficiency] to indicate proficiency level in skills
+                                        # (the higher, the better). |nodes_sizes| = height of the tree; the length of
+                                        # the longest downward path to a leaf from the root.
+    nodes_sizes:        [33, 21, 21, 15]
+    max_proficiency:    5               # This takes values from [1:max_proficiency]
+                                        # Green colours
+    leaf_colors:        ["#aeff89", "#7dff42", "#4ff900", "#43d600", "#38b200"] # |leaf_colors| = max_proficiency
+    internal_colors:    ["#164700", "#216b00", "#2d8e00"]
+    legends:            True            # True or False
+
+# Modify/Add skills below here
+Root skill:
+    Big skill 1:
+        Sub-skill 1:
+            3: [skill 1, skill 2, skill 3, skill 4]
+            2: [skill 5]
+            1: [skill 6, skill 7]
+
+        Sub-skill 2:
+            4: [skill 8, skill 9]
+            5: [skill 10]
+
+    Big skill 2:
+        5: [skill 11, skill 12]
+
+    Big skill 3:
+        Sub-skill 3:
+            5: [skill 13, skill 14, skill 15]
+            4: [skill 16, skill 17]
+
+        Sub-skill 4:
+            3: [skill 18, skill 19]
+            2: [skill 20]
+            1: [skill 21, skill 22]
+
+...
