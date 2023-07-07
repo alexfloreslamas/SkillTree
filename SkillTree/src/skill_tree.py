@@ -3,6 +3,7 @@ import yaml
 import pprint
 from networkx import Graph
 from pyvis.network import Network
+import re
 
 
 class SkillTree:
@@ -60,7 +61,6 @@ class SkillTree:
             (
                 str(idx),
                 {
-                    'group': '0',
                     'label': f"Skill level: {idx+1}/{self.max_proficiency}",
                     'fixed': False,  # So that we can move the legend nodes around to arrange them better
                     'physics': True,
@@ -75,7 +75,9 @@ class SkillTree:
         self.tree.add_nodes_from(legend_nodes)
 
         for i in range(0, len(legend_nodes) - 1):
-            self.tree.add_edge(legend_nodes[i][0], legend_nodes[i+1][0], width=self.edge_width, color=self.edge_color)
+            self.tree.add_edge(
+                legend_nodes[i][0], legend_nodes[i+1][0], weight=self.edge_width, color=self.edge_color, smooth=False
+            )
 
     # ----------------------- #
     # >>> Builds skills graph #
@@ -83,34 +85,30 @@ class SkillTree:
 
     def _tree_builder(self) -> None:
         level:                  int = 0
-        group:                  int = 0
-        for key, value in self.configs.items():
+        for key, item in self.configs.items():
             if key != "network_config":
-                group += 1
                 self.tree.add_node(
                     key,
                     size=self.configs["network_config"]["nodes_sizes"][level],
                     color=self.configs["network_config"]["internal_colors"][level],
-                    group=str(group)
                 )
-                self._tree_builder_aux(key, self.configs[key], level + 1, str(group))
+                self._tree_builder_aux(key, self.configs[key], level + 1)
 
-    def _tree_builder_aux(self, parent_id: str, a_dict: dict[str | int, dict | list], level: int, group: str) -> None:
-        for key, value in a_dict.items():
-            if isinstance(value, dict):  # i.e., "key" = child is a str, "value" is a dict; adding internal nodes
+    def _tree_builder_aux(self, parent_id: str, a_dict: dict[str | int, dict | list], level: int) -> None:
+        for key, item in a_dict.items():
+            if isinstance(item, dict):  # i.e., "key" = child is a str, "item" is a dict; adding internal nodes
                 self.tree.add_node(
                     key,
                     size=self.configs["network_config"]["nodes_sizes"][level],
                     color=self.configs["network_config"]["internal_colors"][level],
-                    group=group
                 )
-                self.tree.add_edge(parent_id, key, width=self.edge_width, color=self.edge_color)
-                self._tree_builder_aux(key, a_dict[key], level + 1, group)
+                self.tree.add_edge(parent_id, key, weight=self.edge_width, color=self.edge_color, smooth=False)
+                self._tree_builder_aux(key, a_dict[key], level + 1)
 
             else:
                 # "key" = skill ability from 1 to "max_proficiency". The higher, the better; for this reason, we need to
                 # scale the node size accordingly see variable "scaled_size".
-                # "value" is a list containing the children or in this case the leaves.
+                # "item" is a list containing the children or in this case the leaves.
                 # Adding leaves
                 scaled_size:    int = (self.configs["network_config"]["nodes_sizes"][-1] / self.max_proficiency) * key
                 leaves:         list[str] = a_dict[key]
@@ -119,10 +117,9 @@ class SkillTree:
                         leaf,
                         size=scaled_size,
                         title=f"Skill level: {key}/{self.max_proficiency}",
-                        color=self.configs["network_config"]['leaf_colors'][key-1],
-                        group=group
+                        color=self.configs["network_config"]['leaf_colors'][key-1]
                     )
-                    self.tree.add_edge(parent_id, leaf, width=self.edge_width, color=self.edge_color)
+                    self.tree.add_edge(parent_id, leaf, weight=self.edge_width, color=self.edge_color, smooth=False)
 
     # ------------------------- #
     # >>> Sets network settings #
@@ -130,7 +127,7 @@ class SkillTree:
 
     def _network_config(self) -> Network:
         nt = Network(
-            height="90%",
+            height="750px",
             width="100%",
             bgcolor=self.configs["network_config"]["bgcolor"],
             font_color=self.configs["network_config"]["font_color"],
@@ -148,5 +145,18 @@ class SkillTree:
     def _draw_and_save_network(self, nt: Network) -> None:
         nt.from_nx(self.tree)
         # nt.show_buttons(filter_=['nodes'])
+        # nt.show_buttons(filter_=['edges'])
         # nt.show_buttons(filter_=['physics'])
         nt.save_graph('./Output/skill_tree.html')
+
+        # To remove the double heading in the HTML file, we execute the following code, taken and adapted from:
+        # - https://stackoverflow.com/questions/74890203/pyvis-network-has-double-heading
+
+        # Edits the heading and removes the first occurrence:
+        html_str = re.sub(r'<center>.+?</h1>\s+</center>', '', nt.html, 1, re.DOTALL)
+
+        h = open('./Output/skill_tree.html', 'w')
+        h.write(html_str)
+        h.close()
+        # The double-heading issue has already been reported:
+        # - https://github.com/WestHealth/pyvis/issues/219
