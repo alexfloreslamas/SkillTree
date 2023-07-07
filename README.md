@@ -23,6 +23,9 @@
   - [Networkx](https://networkx.org/documentation/stable/install.html)
   - [Pyvis](https://pypi.org/project/pyvis/)
 
+  This project has been tested in Python 3.11, PyYAML 6.0, Pprint 0.4.0, Networkx 3.1 and Pyvis 0.3.2.
+
+
 ---
 
 ## Usage
